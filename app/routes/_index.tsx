@@ -1,39 +1,86 @@
+// index.tsx
 import { Form, useActionData } from "@remix-run/react";
 import type { ActionFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { getWeatherResponse } from "../utils/gemini.server";
 
+type ChatMessage = { role: "user" | "bot"; text: string };
+
 export const action: ActionFunction = async ({ request }) => {
   const formData = await request.formData();
   const userMessage = formData.get("message") as string;
+  const previousMessages = JSON.parse(
+    formData.get("chatHistory") as string || "[]"
+  ) as ChatMessage[];
 
   const botReply = await getWeatherResponse(userMessage);
 
-  return json({ userMessage, botReply });
+  const updatedMessages: ChatMessage[] = [
+    ...previousMessages,
+    { role: "user", text: userMessage },
+    { role: "bot", text: botReply },
+  ];
+
+  return json({ messages: updatedMessages });
 };
 
 export default function Index() {
   const data = useActionData<typeof action>();
+  const messages: ChatMessage[] = data?.messages || [];
 
   return (
-    <div style={{ padding: 20 }}>
-      <h1> AI Weather Bot</h1>
+    <div style={{ padding: 20, maxWidth: 600, margin: "auto" }}>
+      <h1>🌤️ AI Weather Chat</h1>
+
+      <div
+        style={{
+          border: "1px solid #ccc",
+          borderRadius: 8,
+          padding: 10,
+          height: "400px",
+          overflowY: "scroll",
+          marginBottom: 20,
+        }}
+      >
+        {messages.map((msg, index) => (
+          <div
+            key={index}
+            style={{
+              marginBottom: 10,
+              textAlign: msg.role === "user" ? "right" : "left",
+            }}
+          >
+            <span
+              style={{
+                background: msg.role === "user" ? "#d1e7dd" : "#f8d7da",
+                padding: 10,
+                borderRadius: 8,
+                display: "inline-block",
+                maxWidth: "80%",
+              }}
+            >
+              <strong>{msg.role === "user" ? "You" : "Bot"}:</strong>{" "}
+              {msg.text}
+            </span>
+          </div>
+        ))}
+      </div>
+
       <Form method="post">
         <input
           name="message"
           type="text"
-          placeholder="Ask about the anything..."
+          placeholder="Type your message..."
           style={{ width: "300px", marginRight: "10px" }}
+          required
         />
-        <button type="submit">Ask</button>
+        <input
+          type="hidden"
+          name="chatHistory"
+          value={JSON.stringify(messages)}
+        />
+        <button type="submit">Send</button>
       </Form>
-
-      {data && (
-        <div style={{ marginTop: "20px" }}>
-          <p><strong>You:</strong> {data.userMessage}</p>
-          <p><strong>Bot:</strong> {data.botReply}</p>
-        </div>
-      )}
     </div>
   );
 }
