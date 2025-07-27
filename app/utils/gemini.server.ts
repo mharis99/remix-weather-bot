@@ -35,14 +35,14 @@
 // }
 
 
-import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
-import { RunnableSequence } from "@langchain/core/runnables";
-import { getCurrentWeather } from "./openweather";
+// import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
+// import { RunnableSequence } from "@langchain/core/runnables";
+// import { getCurrentWeather } from "./openweather";
 
-const model = new ChatGoogleGenerativeAI({
-  modelName: "models/gemini-1.5-flash",
-  apiKey: process.env.GEMINI_API_KEY,
-});
+// const model = new ChatGoogleGenerativeAI({
+//   modelName: "models/gemini-1.5-flash",
+//   apiKey: process.env.GEMINI_API_KEY,
+// });
 
 // const chain = RunnableSequence.from([
 //   async (input: string) => `You are a helpful weather agent. ${input}`,
@@ -51,25 +51,61 @@ const model = new ChatGoogleGenerativeAI({
 // ]);
 
 
-// Use simple pattern matching to decide whether to call the tool
-const chain = RunnableSequence.from([
-  async (input: string) => {
-    const lower = input.toLowerCase();
+// const chain = RunnableSequence.from([
+//   async (input: string) => {
+//     const lower = input.toLowerCase();
 
-    const match = lower.match(/weather in ([a-zA-Z\s]+)/);
-    if (match) {
-      const city = match[1].trim();
-      const weather = await getCurrentWeather(city);
-      return `User asked: "${input}". Here is the real-time weather:\n\n${weather}`;
-    }
+//     const match = lower.match(/weather in ([a-zA-Z\s]+)/);
+//     if (match) {
+//       const city = match[1].trim();
+//       const weather = await getCurrentWeather(city);
+//       return `User asked: "${input}". Here is the real-time weather:\n\n${weather}`;
+//     }
 
-    return `You are a helpful assistant. Answer this: ${input}`;
+//     return `You are a helpful assistant. Answer this: ${input}`;
+//   },
+//   model,
+//   async (output) => output.content,
+// ]);
+
+// export async function getGeminiAgentResponse(input: string) {
+//   return await chain.invoke(input);
+// }
+
+
+
+import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
+import { AgentExecutor } from "langchain/agents";
+import { DynamicTool } from "langchain/tools";
+import { RunnableSequence } from "@langchain/core/runnables";
+import { z } from "zod";
+import { getCurrentWeather } from "./openweather"; 
+
+// Create Gemini model
+const model = new ChatGoogleGenerativeAI({
+  modelName: "models/gemini-1.5-flash",
+  apiKey: process.env.GEMINI_API_KEY,
+});
+
+const weatherTool = new DynamicTool({
+  name: "getCurrentWeather",
+  description: "Get current weather for a city. Input should be the city name as a string.",
+  func: async (city: string) => {
+    const result = await getCurrentWeather(city);
+    return `Weather in ${city}: ${result}`;
   },
-  model,
-  async (output) => output.content,
-]);
+  schema: z.string(), 
+});
 
-export async function getGeminiAgentResponse(input: string) {
-  return await chain.invoke(input);
+// Create the agent executor
+const executor = await AgentExecutor.fromLLMAndTools({
+  llm: model,
+  tools: [weatherTool],
+  agentType: "openai-functions", // needed to auto-call the tools
+});
+
+export async function getGeminiAgentResponse(input: string): Promise<string> {
+  const result = await executor.invoke({ input });
+
+  return result.output ?? "Sorry, I couldn't generate a response.";
 }
-
