@@ -1,7 +1,7 @@
 import { Form, useActionData } from "@remix-run/react";
 import type { ActionFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
-import { getWeatherResponse } from "~/utils/gemini.server";
+import { getWeatherResponse } from "../utils/gemini.server";
 
 export const action: ActionFunction = async ({ request }) => {
   const formData = await request.formData();
