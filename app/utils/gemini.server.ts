@@ -103,6 +103,14 @@ const executorPromise = initializeAgentExecutorWithOptions([weatherTool], model,
 
 export async function getGeminiAgentResponse(input: string) {
   const executor = await executorPromise;
-   return executor.invoke({ input });
-}
+  const result = await executor.invoke({ input });
 
+  // result is likely { output: "response text" } or similar, so extract string:
+  if (typeof result === "string") {
+    return result;
+  } else if (typeof result === "object" && result.output) {
+    return result.output;
+  }
+  
+  return "Sorry, no response.";
+}
