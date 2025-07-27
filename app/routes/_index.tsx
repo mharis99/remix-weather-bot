@@ -45,7 +45,7 @@ export default function Index() {
         fontFamily: "sans-serif",
       }}
     >
-      <h1 style={{ textAlign: "center" }}>🌤️ AI Chat</h1>
+      <h1 style={{ textAlign: "center" }}>AI Chat</h1>
 
       <div
         style={{
