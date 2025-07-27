@@ -1,8 +1,8 @@
-// index.tsx
 import { Form, useActionData } from "@remix-run/react";
 import type { ActionFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
-import { getWeatherResponse } from "../utils/gemini.server";
+import { getGeminiResponse } from "../utils/gemini.server";
+import { useEffect, useRef } from "react";
 
 type ChatMessage = { role: "user" | "bot"; text: string };
 
@@ -13,7 +13,7 @@ export const action: ActionFunction = async ({ request }) => {
     formData.get("chatHistory") as string || "[]"
   ) as ChatMessage[];
 
-  const botReply = await getWeatherResponse(userMessage);
+  const botReply = await getGeminiResponse(userMessage);
 
   const updatedMessages: ChatMessage[] = [
     ...previousMessages,
@@ -27,6 +27,14 @@ export const action: ActionFunction = async ({ request }) => {
 export default function Index() {
   const data = useActionData<typeof action>();
   const messages: ChatMessage[] = data?.messages || [];
+
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.value = ""; // Clear the input after form submission
+    }
+  }, [messages]); // Run every time messages change (i.e., after form submission)
 
   return (
     <div style={{ padding: 20, maxWidth: 600, margin: "auto" }}>
@@ -59,7 +67,7 @@ export default function Index() {
                 maxWidth: "80%",
               }}
             >
-              <strong>{msg.role === "user" ? "You" : "Bot"}:</strong>{" "}
+              <strong>{msg.role === "user" ? "You" : "AI"}:</strong>{" "}
               {msg.text}
             </span>
           </div>
@@ -68,6 +76,7 @@ export default function Index() {
 
       <Form method="post">
         <input
+          ref={inputRef}
           name="message"
           type="text"
           placeholder="Type your message..."
