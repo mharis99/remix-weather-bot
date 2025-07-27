@@ -36,7 +36,7 @@
 
 
 import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
-import { RunnableSequence } from "langchain/schema/runnable";
+import { RunnableSequence } from "@langchain/core/runnables";
 
 const model = new ChatGoogleGenerativeAI({
   modelName: "models/gemini-pro",
