@@ -13,7 +13,8 @@
     "remix": "2.15.3",
     "react-dom": "^18.2.0",
     "dotenv": "^16.0.3",
-    "@langchain/google-genai": "^0.0.x"
+    "@langchain/google-genai": "^0.0.x",
+    "langchain": "^0.1.xx"
   },
   "devDependencies": {
     "@remix-run/dev": "2.15.3",
