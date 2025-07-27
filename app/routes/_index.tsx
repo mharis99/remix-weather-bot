@@ -60,7 +60,7 @@ export default function Index() {
           >
             <span
               style={{
-                background: msg.role === "user" ? "#d1e7dd" : "#686befff",
+                background: msg.role === "user" ? "#d1e7dd" : "#c2c3f5ff",
                 padding: 10,
                 borderRadius: 8,
                 display: "inline-block",
