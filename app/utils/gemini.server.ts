@@ -103,6 +103,6 @@ const executorPromise = initializeAgentExecutorWithOptions([weatherTool], model,
 
 export async function getGeminiAgentResponse(input: string) {
   const executor = await executorPromise;
-  return executor.invoke(input);
+   return executor.invoke({ input });
 }
 
