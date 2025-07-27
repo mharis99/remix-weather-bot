@@ -1,0 +1,21 @@
+{
+  "name": "remix-weather-bot",
+  "private": true,
+  "scripts": {
+    "dev": "remix dev",
+    "build": "remix build",
+    "start": "remix-serve build"
+  },
+  "dependencies": {
+    "@remix-run/node": "^2.7.0",
+    "@remix-run/react": "^2.7.0",
+    "@remix-run/serve": "^2.7.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "dotenv": "^16.0.3"
+  },
+  "devDependencies": {
+    "@remix-run/dev": "^2.7.0",
+    "typescript": "^5.0.0"
+  }
+}
