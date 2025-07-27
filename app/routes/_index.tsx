@@ -17,12 +17,12 @@ export default function Index() {
 
   return (
     <div style={{ padding: 20 }}>
-      <h1>🌤️ AI Weather Bot</h1>
+      <h1> AI Weather Bot</h1>
       <Form method="post">
         <input
           name="message"
           type="text"
-          placeholder="Ask about the weather..."
+          placeholder="Ask about the anything..."
           style={{ width: "300px", marginRight: "10px" }}
         />
         <button type="submit">Ask</button>
