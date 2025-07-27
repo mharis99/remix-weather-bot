@@ -99,11 +99,9 @@ const executorPromise = initializeAgentExecutorWithOptions([weatherTool], model,
   agentType: "zero-shot-react-description",
 });
 
-//let executorPromise: Promise<AgentExecutor>;
-
 export async function getGeminiAgentResponse(input: string) {
-  const executor = await executorPromise;
-  const result = await executor.invoke({ input });
+  //const executor = await executorPromise;
+  const result = await executorPromise.invoke({ input });
 
   // result is likely { output: "response text" } or similar, so extract string:
   if (typeof result === "string") {
@@ -112,5 +110,5 @@ export async function getGeminiAgentResponse(input: string) {
     return result.output;
   }
   
-  return "Sorry, no response.";
+  return "no response.";
 }
