@@ -73,11 +73,9 @@
 // }
 
 
-
 import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
 import { AgentExecutor } from "langchain/agents";
 import { DynamicTool } from "langchain/tools";
-import { RunnableSequence } from "@langchain/core/runnables";
 import { z } from "zod";
 import { getCurrentWeather } from "./openweather"; 
 
@@ -94,26 +92,17 @@ const weatherTool = new DynamicTool({
     const result = await getCurrentWeather(city);
     return `Weather in ${city}: ${result}`;
   },
-  schema: z.string(), 
+  schema: z.string(),
 });
-
-// Create the agent executor
-// const executor = await AgentExecutor.fromLLMAndTools({
-//   llm: model,
-//   tools: [weatherTool],
-//   agentType: "openai-functions", // needed to auto-call the tools
-// });
 
 let executorPromise: Promise<AgentExecutor>;
 
 export async function getGeminiAgentResponse(input: string) {
   if (!executorPromise) {
-    executorPromise = AgentExecutor.fromLLMAndTools({
-      llm: model,
-      tools: [weatherTool],
-    });
+    executorPromise = AgentExecutor.fromLLMAndTools(model, [weatherTool]);
   }
 
   const executor = await executorPromise;
-  return executor.invoke({ input });
+  return executor.invoke(input);  
 }
+
