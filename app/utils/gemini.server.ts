@@ -14,6 +14,8 @@ If someone says "${message}", answer with relevant weather info or a helpful rep
   });
 
   const data = await res.json();
+  console.log(`Gemini resp ${res.status}: ${await res.text()}`);
+  console.log("Gemini API raw response:", JSON.stringify(data, null, 2));
 
   return (
     data?.candidates?.[0]?.content?.parts?.[0]?.text ??
