@@ -75,7 +75,7 @@
 
 import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
 import { initializeAgentExecutorWithOptions } from "langchain/agents";
-import { DynamicTool } from "@langchain/community";
+import { DynamicTool } from "langchain/tools";
 import { z } from "zod";
 import { getCurrentWeather } from "./openweather"; 
 
@@ -103,7 +103,6 @@ export async function getGeminiAgentResponse(input: string) {
   const executor = await executorPromise;
   const result = await executor.invoke({ input });
 
-  // result is likely { output: "response text" } or similar, so extract string:
   if (typeof result === "string") {
     return result;
   } else if (typeof result === "object" && result.output) {

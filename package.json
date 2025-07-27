@@ -16,8 +16,7 @@
     "@langchain/google-genai": "^0.0.x",
     "langchain": "^0.1.xx",
     "axios": "^1.6.0",
-    "zod": "^3.23.8",
-    "@langchain/community": "^0.1.0"
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@remix-run/dev": "2.15.3",
