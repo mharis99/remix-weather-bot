@@ -14,7 +14,8 @@
     "react-dom": "^18.2.0",
     "dotenv": "^16.0.3",
     "@langchain/google-genai": "^0.0.x",
-    "langchain": "^0.1.xx"
+    "langchain": "^0.1.xx",
+    "axios": "^1.6.0"
   },
   "devDependencies": {
     "@remix-run/dev": "2.15.3",

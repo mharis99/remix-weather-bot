@@ -37,14 +37,34 @@
 
 import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
 import { RunnableSequence } from "@langchain/core/runnables";
+import { getCurrentWeather } from "./openweather";
 
 const model = new ChatGoogleGenerativeAI({
   modelName: "models/gemini-1.5-flash",
   apiKey: process.env.GEMINI_API_KEY,
 });
 
+// const chain = RunnableSequence.from([
+//   async (input: string) => `You are a helpful weather agent. ${input}`,
+//   model,
+//   async (output) => output.content,
+// ]);
+
+
+// Use simple pattern matching to decide whether to call the tool
 const chain = RunnableSequence.from([
-  async (input: string) => `You are a helpful weather agent. ${input}`,
+  async (input: string) => {
+    const lower = input.toLowerCase();
+
+    const match = lower.match(/weather in ([a-zA-Z\s]+)/);
+    if (match) {
+      const city = match[1].trim();
+      const weather = await getCurrentWeather(city);
+      return `User asked: "${input}". Here is the real-time weather:\n\n${weather}`;
+    }
+
+    return `You are a helpful assistant. Answer this: ${input}`;
+  },
   model,
   async (output) => output.content,
 ]);
