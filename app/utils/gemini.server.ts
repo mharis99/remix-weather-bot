@@ -98,14 +98,22 @@ const weatherTool = new DynamicTool({
 });
 
 // Create the agent executor
-const executor = await AgentExecutor.fromLLMAndTools({
-  llm: model,
-  tools: [weatherTool],
-  agentType: "openai-functions", // needed to auto-call the tools
-});
+// const executor = await AgentExecutor.fromLLMAndTools({
+//   llm: model,
+//   tools: [weatherTool],
+//   agentType: "openai-functions", // needed to auto-call the tools
+// });
 
-export async function getGeminiAgentResponse(input: string): Promise<string> {
-  const result = await executor.invoke({ input });
+let executorPromise: Promise<AgentExecutor>;
 
-  return result.output ?? "Sorry, I couldn't generate a response.";
+export async function getGeminiAgentResponse(input: string) {
+  if (!executorPromise) {
+    executorPromise = AgentExecutor.fromLLMAndTools({
+      llm: model,
+      tools: [weatherTool],
+    });
+  }
+
+  const executor = await executorPromise;
+  return executor.invoke({ input });
 }
