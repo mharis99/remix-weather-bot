@@ -32,39 +32,49 @@ export default function Index() {
 
   useEffect(() => {
     if (inputRef.current) {
-      inputRef.current.value = ""; // Clear the input after form submission
+      inputRef.current.value = "";
     }
-  }, [messages]); // Run every time messages change (i.e., after form submission)
+  }, [messages]);
 
   return (
-    <div style={{ padding: 20, maxWidth: 600, margin: "auto" }}>
-      <h1>AI Chat</h1>
+    <div
+      style={{
+        padding: "1rem",
+        maxWidth: "100%",
+        margin: "0 auto",
+        fontFamily: "sans-serif",
+      }}
+    >
+      <h1 style={{ textAlign: "center" }}>🌤️ AI Chat</h1>
 
       <div
         style={{
           border: "1px solid #ccc",
           borderRadius: 8,
-          padding: 10,
-          height: "400px",
-          overflowY: "scroll",
-          marginBottom: 20,
+          padding: "1rem",
+          height: "60vh",
+          overflowY: "auto",
+          marginBottom: "1rem",
+          backgroundColor: "#f9f9f9",
         }}
       >
         {messages.map((msg, index) => (
           <div
             key={index}
             style={{
-              marginBottom: 10,
-              textAlign: msg.role === "user" ? "right" : "left",
+              marginBottom: 12,
+              display: "flex",
+              justifyContent: msg.role === "user" ? "flex-end" : "flex-start",
             }}
           >
             <span
               style={{
-                background: msg.role === "user" ? "#d1e7dd" : "#c2c3f5ff",
-                padding: 10,
-                borderRadius: 8,
-                display: "inline-block",
+                backgroundColor: msg.role === "user" ? "#d1e7dd" : "#c2c3f5ff",
+                padding: "10px 14px",
+                borderRadius: 16,
                 maxWidth: "80%",
+                fontSize: "0.95rem",
+                lineHeight: 1.4,
               }}
             >
               <strong>{msg.role === "user" ? "You" : "AI"}:</strong>{" "}
@@ -74,13 +84,20 @@ export default function Index() {
         ))}
       </div>
 
-      <Form method="post">
+      <Form method="post" style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
         <input
           ref={inputRef}
           name="message"
           type="text"
           placeholder="Type your message..."
-          style={{ width: "300px", marginRight: "10px" }}
+          style={{
+            flex: "1 1 auto",
+            padding: "10px",
+            borderRadius: 8,
+            border: "1px solid #ccc",
+            fontSize: "1rem",
+            minWidth: 0,
+          }}
           required
         />
         <input
@@ -88,7 +105,20 @@ export default function Index() {
           name="chatHistory"
           value={JSON.stringify(messages)}
         />
-        <button type="submit">Send</button>
+        <button
+          type="submit"
+          style={{
+            padding: "10px 16px",
+            borderRadius: 8,
+            border: "none",
+            backgroundColor: "#007bff",
+            color: "#fff",
+            fontSize: "1rem",
+            cursor: "pointer",
+          }}
+        >
+          Send
+        </button>
       </Form>
     </div>
   );
