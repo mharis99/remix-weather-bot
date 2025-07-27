@@ -74,7 +74,7 @@
 
 
 import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
-import { AgentExecutor } from "langchain/agents";
+import { initializeAgentExecutorWithOptions } from "langchain/agents";
 import { DynamicTool } from "langchain/tools";
 import { z } from "zod";
 import { getCurrentWeather } from "./openweather"; 
@@ -95,14 +95,14 @@ const weatherTool = new DynamicTool({
   schema: z.string(),
 });
 
-let executorPromise: Promise<AgentExecutor>;
+const executorPromise = initializeAgentExecutorWithOptions([weatherTool], model, {
+  agentType: "zero-shot-react-description",
+});
+
+//let executorPromise: Promise<AgentExecutor>;
 
 export async function getGeminiAgentResponse(input: string) {
-  if (!executorPromise) {
-    executorPromise = AgentExecutor.fromLLMAndTools(model, [weatherTool]);
-  }
-
   const executor = await executorPromise;
-  return executor.invoke(input);  
+  return executor.invoke(input);
 }
 
