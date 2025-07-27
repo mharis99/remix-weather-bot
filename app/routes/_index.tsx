@@ -38,7 +38,7 @@ export default function Index() {
 
   return (
     <div style={{ padding: 20, maxWidth: 600, margin: "auto" }}>
-      <h1>🌤️ AI Weather Chat</h1>
+      <h1>AI Chat</h1>
 
       <div
         style={{
