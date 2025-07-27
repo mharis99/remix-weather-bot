@@ -1,11 +1,9 @@
-
 import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
 import { initializeAgentExecutorWithOptions } from "langchain/agents";
 import { DynamicTool } from "langchain/tools";
 import { z } from "zod";
 import { getCurrentWeather } from "./openweather"; 
 
-// Create Gemini model
 const model = new ChatGoogleGenerativeAI({
   modelName: "models/gemini-1.5-flash",
   apiKey: process.env.GEMINI_API_KEY,
