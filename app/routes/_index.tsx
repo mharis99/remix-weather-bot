@@ -1,7 +1,7 @@
 import { Form, useActionData } from "@remix-run/react";
 import type { ActionFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
-import { getGeminiResponse } from "../utils/gemini.server";
+import { getGeminiAgentResponse } from "../utils/gemini.server";
 import { useEffect, useRef } from "react";
 
 type ChatMessage = { role: "user" | "bot"; text: string };
@@ -13,7 +13,7 @@ export const action: ActionFunction = async ({ request }) => {
     formData.get("chatHistory") as string || "[]"
   ) as ChatMessage[];
 
-  const botReply = await getGeminiResponse(userMessage);
+  const botReply = await getGeminiAgentResponse(userMessage);
 
   const updatedMessages: ChatMessage[] = [
     ...previousMessages,
